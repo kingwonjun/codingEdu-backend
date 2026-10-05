@@ -13,9 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
     @PostMapping("/signup")
     public SignupResponse signup(@Valid @RequestBody SignupRequest request) {
-        return AuthService.signup(SignupResponse response);
+        return authService.signup(
+                request.email(),
+                request.password(),
+                request.nickname()
+        );
     }
 
     @PostMapping("/email-verification/confirm")

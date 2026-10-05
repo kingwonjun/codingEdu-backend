@@ -22,4 +22,38 @@ public class User {
     String nickname;
 
     boolean emailVerified;
+
+    protected User() {}
+
+    public User(
+            String email,
+            String nickname
+    ) {
+        this.email = email;
+        this.nickname = nickname;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
 }

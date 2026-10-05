@@ -5,5 +5,4 @@ public record SignupResponse(
         String email,
         String nickname,
         String status
-) {
-}
+){}
