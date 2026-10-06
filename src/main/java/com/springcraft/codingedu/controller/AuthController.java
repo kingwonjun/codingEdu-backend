@@ -1,6 +1,7 @@
 package com.springcraft.codingedu.controller;
 
 import com.resend.core.exception.ResendException;
+import com.springcraft.codingedu.domain.User;
 import com.springcraft.codingedu.dto.*;
 import com.springcraft.codingedu.service.AuthService;
 import com.springcraft.codingedu.service.EmailVerificationService;
@@ -34,9 +35,12 @@ public class AuthController {
     // 회원가입 즉시 이메일 보내기 ->
     @PostMapping("/email/verify")
     public EmailVerifyResponse emailVerify(@RequestBody EmailVerifyRequest request) {
-        emailVerificationService.verify(request.id(), request.code());
+        return emailVerificationService.verify(request.id(), request.code());
+    }
 
-        return
+    @PostMapping("/email/resend")
+    public void emailResend(@RequestBody EmailResendRequest request) throws ResendException {
+        authService.verifyEmail(request.userId());
     }
 
 

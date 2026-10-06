@@ -1,4 +1,4 @@
 package com.springcraft.codingedu.dto;
 
-public record EmailVerifyResponse (Long userId, String code){
+public record EmailVerifyResponse (Long userId, boolean emailVerified){
 }

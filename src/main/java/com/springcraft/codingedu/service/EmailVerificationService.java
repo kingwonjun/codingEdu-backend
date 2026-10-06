@@ -3,6 +3,8 @@ package com.springcraft.codingedu.service;
 import com.resend.core.exception.ResendException;
 import com.springcraft.codingedu.domain.EmailVerificationCode;
 import com.springcraft.codingedu.domain.User;
+import com.springcraft.codingedu.dto.EmailResendResponse;
+import com.springcraft.codingedu.dto.EmailVerifyResponse;
 import com.springcraft.codingedu.repository.EmailVerificationCodeRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +32,7 @@ public class EmailVerificationService {
         emailVerificationCodeRepository.save(verificationCode);
     }
 
-    public void verify(Long userId, String code) {
+    public EmailVerifyResponse verify(Long userId, String code) {
         EmailVerificationCode verificationCode = emailVerificationCodeRepository.findByUser_Id(userId)
                 .orElseThrow();
         if (LocalDateTime.now().isAfter(verificationCode.getExpiresAt())) {
@@ -40,6 +42,10 @@ public class EmailVerificationService {
         if (!verificationCode.getCode().equals(code)) {
             throw new IllegalArgumentException("잘못된 인증번호입니다.");
         }
+        return new EmailVerifyResponse(
+                userId,
+                true
+        );
     }
 
     public void resend(User user) throws ResendException {

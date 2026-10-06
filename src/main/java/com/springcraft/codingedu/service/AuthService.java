@@ -60,8 +60,9 @@ public class AuthService {
         );
     }
 
-    public void verifyEmail(Long userId) {
+    public void verifyEmail(Long userId) throws ResendException {
         User user = userRepository.findById(userId).orElseThrow();
+        emailVerificationService.resend(user);
         user.setEmailVerified(true);
     }
 }

@@ -16,8 +16,6 @@ public class ResendConfig {
 
     @Bean
     public Resend resend() throws ResendException {
-        Resend resend = new Resend(apiKey);
-
-        return resend;
+        return new Resend(apiKey);
     }
 }
