@@ -1,5 +1,6 @@
 package com.springcraft.codingedu.service;
 
+import com.resend.core.exception.ResendException;
 import com.springcraft.codingedu.domain.User;
 import com.springcraft.codingedu.dto.SignupRequest;
 import com.springcraft.codingedu.dto.SignupResponse;
@@ -15,21 +16,19 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final EmailVerificationService emailVerificationService;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            EmailService emailService
+            EmailVerificationService emailVerificationService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
+        this.emailVerificationService = emailVerificationService;
     }
 
-    public SignupResponse signup(String email, String password, String nickname) {
-
-
+    public SignupResponse signup(String email, String password, String nickname) throws ResendException {
 
         email = email.strip().toLowerCase();
         nickname = nickname.strip();
@@ -51,6 +50,7 @@ public class AuthService {
         user.setPassword(encodePassword);
 
         User savedUser = userRepository.save(user);
+        emailVerificationService.createAndSendCode(user);
 
         return new SignupResponse(
                 savedUser.getId(),
@@ -58,5 +58,10 @@ public class AuthService {
                 savedUser.getNickname(),
                 "PENDING_EMAIL"
         );
+    }
+
+    public void verifyEmail(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        user.setEmailVerified(true);
     }
 }

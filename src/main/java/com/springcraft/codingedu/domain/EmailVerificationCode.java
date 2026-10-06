@@ -5,16 +5,16 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class EmailVerificationToken {
+public class EmailVerificationCode {
 
     @Id
     @GeneratedValue
     Long id;
 
     @Column(nullable = false, unique = true)
-     String token;
+     String code;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(nullable = false, name = "user_id")
     User user;
 
@@ -26,26 +26,24 @@ public class EmailVerificationToken {
     @Column(nullable = false)
     LocalDateTime createdAt;
 
-    protected EmailVerificationToken(){}
+    protected EmailVerificationCode(){}
 
-    public EmailVerificationToken(
-            String token,
-            User user,
-            LocalDateTime createdAt,
-            LocalDateTime expiresAt
+    public EmailVerificationCode(
+            String code,
+            User user
     ) {
-        this.token = token;
+        this.code = code;
         this.user = user;
         this.createdAt = LocalDateTime.now();
-        this.expiresAt = expiresAt;
+        this.expiresAt = createdAt.plusMinutes(1);
     }
 
     public void markAsUsed() {
         this.usedAt = LocalDateTime.now();
     }
 
-    public String getToken() {
-        return token;
+    public String getCode() {
+        return code;
     }
 
     public User getUser() {

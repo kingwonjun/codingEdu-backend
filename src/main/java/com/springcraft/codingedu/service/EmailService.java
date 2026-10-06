@@ -16,12 +16,12 @@ public class EmailService {
         this.resend = resend;
     }
 
-    public void sendVerificationEmail(String email, String token) throws ResendException {
+    public void sendVerificationEmail(String email, String code) throws ResendException {
         CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("onboarding@resend.dev")
-                .to("apppppp8229@gmail.com")
+                .from("apppppp8229@gmail.com")
+                .to(email)
                 .subject("Hello World")
-                .html("<p>Congrats on sending your <strong>first email</strong>!</p>")
+                .html("<p>인증메일입니다.\n" + code + " </p>")
                 .build();
         CreateEmailResponse data = resend.emails().send(params);
     }
