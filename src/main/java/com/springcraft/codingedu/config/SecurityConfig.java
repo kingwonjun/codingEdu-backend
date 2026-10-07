@@ -32,24 +32,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider inMemoryAuthenticationProvider (
-            CustomUserDetailsService customUserDetailsService,
-
-    )
-
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(users.username("user2").password("password").roles("USER").build());
-        manager.createUser(users.username("admin").password("password").roles("ADMIN").build());
-        return manager;
     }
 
 
