@@ -32,7 +32,6 @@ public class AuthController {
         );
     }
 
-    // 회원가입 즉시 이메일 보내기 ->
     @PostMapping("/email/verify")
     public EmailVerifyResponse emailVerify(@RequestBody EmailVerifyRequest request) {
         return emailVerificationService.verify(request.id(), request.code());
@@ -42,6 +41,5 @@ public class AuthController {
     public void emailResend(@RequestBody EmailResendRequest request) throws ResendException {
         authService.verifyEmail(request.userId());
     }
-
 
 }

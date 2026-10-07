@@ -18,7 +18,7 @@ public class EmailService {
 
     public void sendVerificationEmail(String email, String code) throws ResendException {
         CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("apppppp8229@gmail.com")
+                .from("onboarding@resend.dev")
                 .to(email)
                 .subject("Hello World")
                 .html("<p>인증메일입니다.\n" + code + " </p>")

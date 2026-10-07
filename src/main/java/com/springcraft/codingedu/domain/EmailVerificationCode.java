@@ -21,8 +21,6 @@ public class EmailVerificationCode {
     @Column(nullable = false)
     LocalDateTime expiresAt;
 
-    LocalDateTime usedAt;
-
     @Column(nullable = false)
     LocalDateTime createdAt;
 
@@ -38,10 +36,6 @@ public class EmailVerificationCode {
         this.expiresAt = createdAt.plusMinutes(1);
     }
 
-    public void markAsUsed() {
-        this.usedAt = LocalDateTime.now();
-    }
-
     public String getCode() {
         return code;
     }
@@ -52,10 +46,6 @@ public class EmailVerificationCode {
 
     public LocalDateTime getExpiresAt() {
         return expiresAt;
-    }
-
-    public LocalDateTime getUsedAt() {
-        return usedAt;
     }
 
     public LocalDateTime getCreatedAt() {
