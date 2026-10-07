@@ -49,7 +49,7 @@ public class AuthService {
         User user = new User(email, nickname);
         String encodePassword = passwordEncoder.encode(password);
         user.setPassword(encodePassword);
-        user.setRole(Role.USER);
+        user.setRole(Role.ROLE_USER);
 
         User savedUser = userRepository.save(user);
         emailVerificationService.createAndSendCode(user);
