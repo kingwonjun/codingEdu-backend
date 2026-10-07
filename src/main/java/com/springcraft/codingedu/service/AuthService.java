@@ -1,6 +1,7 @@
 package com.springcraft.codingedu.service;
 
 import com.resend.core.exception.ResendException;
+import com.springcraft.codingedu.domain.Role;
 import com.springcraft.codingedu.domain.User;
 import com.springcraft.codingedu.dto.SignupRequest;
 import com.springcraft.codingedu.dto.SignupResponse;
@@ -48,6 +49,7 @@ public class AuthService {
         User user = new User(email, nickname);
         String encodePassword = passwordEncoder.encode(password);
         user.setPassword(encodePassword);
+        user.setRole(Role.USER);
 
         User savedUser = userRepository.save(user);
         emailVerificationService.createAndSendCode(user);

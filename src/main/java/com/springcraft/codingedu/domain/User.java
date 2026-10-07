@@ -19,6 +19,10 @@ public class User {
     @Column(nullable = false, unique = true)
     String nickname;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     boolean emailVerified;
 
     protected User() {}
@@ -39,6 +43,10 @@ public class User {
         this.emailVerified = emailVerified;
     }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -53,5 +61,13 @@ public class User {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }
