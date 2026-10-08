@@ -24,6 +24,7 @@
     <modules>
         <module>minidb-core</module>
         <module>minidb-server</module>
+        <module>minidb-cli</module>
     </modules>
     <scm>
         <connection/>
