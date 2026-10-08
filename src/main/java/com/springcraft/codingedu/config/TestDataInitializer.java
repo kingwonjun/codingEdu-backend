@@ -20,7 +20,6 @@ public class TestDataInitializer implements ApplicationRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
@@ -28,7 +27,7 @@ public class TestDataInitializer implements ApplicationRunner {
             return;
         }
         User user = new User("test@test.com", "test1");
-        user.setPassword(passwordEncoder.encode("1234"));
+        user.setPassword(passwordEncoder.encode("123412341234"));
         user.setEmailVerified(true);
         user.setRole(Role.ROLE_USER);
         userRepository.save(user);
