@@ -11,6 +11,7 @@
     <groupId>com.springcraft</groupId>
     <artifactId>codingEdu</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>codingEdu</name>
     <description>codingEdu</description>
     <url/>
@@ -20,6 +21,9 @@
     <developers>
         <developer/>
     </developers>
+    <modules>
+        <module>minidb-core</module>
+    </modules>
     <scm>
         <connection/>
         <developerConnection/>
