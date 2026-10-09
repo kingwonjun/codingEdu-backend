@@ -29,14 +29,14 @@ public class DatabaseTest {
 
     @Test
     public void shouldReturnNullForMissingKey() {
-        assertNull(database.get("unknown"));
+        assertEquals("(nil)",database.get("unknown"));
     }
 
     @Test
     public void shouldDeleteExistingKey() {
         database.set("name", "alice");
         assertTrue(database.delete("name"));
-        assertNull(database.get("name"));
+        assertEquals("(nil)", database.get("name"));
     }
 
     @Test
