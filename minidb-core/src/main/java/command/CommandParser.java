@@ -7,11 +7,7 @@ public class CommandParser {
 
     public String[] parser(String input) {
         String[] tokens = input.strip().split("\\s+");
-        for (int i = 0; i < tokens.length; i++){
-            tokens[i] = tokens[i].toLowerCase();
-        }
-//        String command = tokens[0].toLowerCase();
-//        String[] args = Arrays.copyOfRange(tokens, 1, tokens.length);
+        tokens[0] = tokens[0].toLowerCase();
         switch (tokens[0]) {
             case "set":
                 if (tokens.length != 3) {

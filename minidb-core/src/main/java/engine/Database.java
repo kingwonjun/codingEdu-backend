@@ -12,6 +12,9 @@ public class Database {
     }
 
     public String get(String key) {
+        if (dbList.get(key) == null) {
+            return "(nil)";
+        }
         return dbList.get(key);
     }
 
@@ -22,5 +25,19 @@ public class Database {
         }
        return false;
     }
+
+    public boolean exists(String key) {
+        return dbList.containsKey(key);
+    }
+
+    public String count() {
+        return String.valueOf(dbList.size());
+    }
+    public void clear() {
+        dbList.clear();
+    }
+
+
+
 
 }
