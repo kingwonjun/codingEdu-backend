@@ -5,6 +5,7 @@ import engine.Database;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -12,6 +13,8 @@ public class Main {
         Database database = new Database();
         CommandParser commandParser = new CommandParser();
         CommandProcessor commandProcessor = new CommandProcessor(database);
+        Path path = Path.of("data.minidb");
+
 
         while(true) {
             System.out.print("MiniDB>");
@@ -23,5 +26,6 @@ public class Main {
             String result = commandProcessor.execute(commandParser.parser(input));
             System.out.println(result);
         }
+
     }
 }
