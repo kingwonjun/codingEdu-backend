@@ -54,6 +54,7 @@ public class Main {
                     content.putInt(tokens[2].getBytes(StandardCharsets.UTF_8).length);
                     content.put(tokens[2].getBytes(StandardCharsets.UTF_8));
                     content.flip();
+                    channel.position(channel.size());
                     channel.write(content);
                 }
             } else if(tokens[0].equals("seedb")) {
@@ -69,23 +70,27 @@ public class Main {
                     System.out.println("mini 파일입니다.");
                     fileInfo.setVersion(header.getInt(6));
                     fileInfo.setRecordCount(header.getInt(10));
-                    System.out.println("version : " + fileInfo.getVersion() + " " + fileInfo.getRecordCount());
                     ByteBuffer content = ByteBuffer.allocate(4);
                     while (true) {
                         int bytesRead = channel.read(content);
-                        content.flip();
-                        int keyLength = content.getInt();
-                        bytesRead = channel.read(content);
-                        int valueLength = content.getInt();
-                        content.position(content.getInt());
-                        content = ByteBuffer.allocate(8 + keyLength + valueLength);
                         if (bytesRead == -1) {
                             break;
                         }
-
-                        CharBuffer chars = StandardCharsets.UTF_8.decode(content);
-                        System.out.print(chars);
+                        content.flip();
+                        int keyLength = content.getInt();
                         content.compact();
+                        channel.position(channel.position() + keyLength);
+                        bytesRead = channel.read(content);
+                        if (bytesRead == -1) {
+                            break;
+                        }
+                        content.flip();
+                        int valueLength = content.getInt();
+                        int finalLength = 8 + keyLength + valueLength;
+                        content = ByteBuffer.allocate(finalLength);
+                        content.clear();
+                        channel.position(channel.position() - finalLength);
+
                     }
                 }
             }
