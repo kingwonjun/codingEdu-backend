@@ -1,4 +1,4 @@
-package writeorread;
+package read;
 
 import java.nio.charset.StandardCharsets;
 

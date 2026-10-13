@@ -49,7 +49,7 @@ public class CommandParser {
                     throw new IllegalArgumentException("ERROR wrong number of arguments for EXIT");
                 }
                 break;
-            case "":
+            case "", "seedb":
                 break;
             default:
                 throw new IllegalArgumentException("ERROR unknown command: " + tokens[0]);
