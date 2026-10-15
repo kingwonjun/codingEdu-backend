@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParserObject {
@@ -5,7 +6,7 @@ public class ParserObject {
     private String command;
     private String table;
     private boolean ifNotExists;
-    private List<ColumnInfo> columns;
+    private List<ColumnInfo> columns = new ArrayList<>();
 
     public String getCommand() {
         return command;

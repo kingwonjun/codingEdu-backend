@@ -3,10 +3,8 @@ public class ColumnInfo {
     private String type;
     private Integer maxLength;
 
-    public ColumnInfo(String name, String type, Integer maxLength) {
-        this.name = name;
-        this.type = type;
-        this.maxLength = maxLength;
+    public ColumnInfo() {
+
     }
 
     public void setName(String name) {
