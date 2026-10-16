@@ -1,0 +1,6 @@
+CREATE TABLE enrollments (
+    student_id INT,
+    course_id INT,
+    semester VARCHAR(20),
+    PRIMARY KEY (student_id, course_id)
+);

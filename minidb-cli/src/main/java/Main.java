@@ -40,8 +40,6 @@ public class Main {
 
         String input = inputSb.toString();
         char[] c = input.toCharArray();
-        Map<String, LinkedHashMap<String, Object>> tables = new HashMap<>();
-        LinkedHashMap<String, Object> tablesInfo = new LinkedHashMap<>();
 
         for (int i = 0; i < c.length; i++) {
             if (Character.isWhitespace(c[i]) && !inString) {
@@ -71,6 +69,7 @@ public class Main {
                 if (!sb.toString().isEmpty()) {
                     words.add(sb.toString());
                 }
+                words.add(";");
                 sb.setLength(0);
                 break;
             }
@@ -127,9 +126,7 @@ public class Main {
                 }
             }
 
-            // 처음 시작할 때 depth 0
-            // maxLength가 필요한지 안 필요한지 분기문으로
-            if (isToken(position, words, "(", 0) && depth == 0) {
+            if (isToken(position, words, "(", 0) || isToken(position, words, ",", 0)) {
                 depth++;
                 position++;
                 if (position >= words.size()) {
@@ -137,10 +134,49 @@ public class Main {
                             "SQL syntax error: Unexpected end of input"
                     );
                 }
-                // Unique 때도 활용해야되서 변수로 바꿈
                 String columnName = words.get(position);
-                columninfo.setName(columnName);
-                position++;
+                if (isToken(position, words,"PRIMARY", 0) && isToken(position, words, "KEY", 1)) {
+                    if (isToken(position, words, "(", 2)) {
+                        position += 2;
+                        while (!isToken(position, words, ")", 0)) {
+                            position++;
+                            pkList.add(words.get(position));
+                            position++;
+                        }
+                        tableConstraint.setPk(pkList);
+                        position++;
+                        if (isToken(position, words, ";", 1)) {
+                            break;
+                        }
+                        if (isToken(position, words, ",", 0)) {
+                            continue;
+                        }
+                    }
+                }
+                else if (isToken(position, words,"UNIQUE", 0)) {
+                    if (isToken(position, words, "(", 2)) {
+                        position += 2;
+                        List<String> list = new ArrayList<>();
+                        while (!isToken(position, words, ")", 0)) {
+                            position++;
+                            list.add(words.get(position));
+                            position++;
+                        }
+                        uniqueList.add(list);
+                        tableConstraint.setUnique(uniqueList);
+                        position++;
+                        if (isToken(position, words, ";", 1)) {
+                            break;
+                        }
+                        if (isToken(position, words, ",", 0)) {
+                            continue;
+                        }
+                    }
+                }
+                else {
+                    columninfo.setName(columnName);
+                    position++;
+                }
                 if (isToken(position, words, "VARCHAR", 0)
                         || isToken(position, words, "CHAR", 0)
                         || isToken(position, words, "BIT", 0)
@@ -150,7 +186,7 @@ public class Main {
                     depth++;
                     position += 2;
                     columninfo.setMaxLength(Integer.valueOf(words.get(position)));
-                    position++;
+                    position+= 2;
                     depth--;
                 } else {
                     columninfo.setType(words.get(position));
@@ -160,7 +196,7 @@ public class Main {
                 while (!isToken(position, words, ",", 0)) {
                     if (isToken(position, words, "NOT", 0)
                             && isToken(position, words, "NULL", 1)) {
-                        columninfo.setNullable(true);
+                        columninfo.setNullable(false);
                         position += 2;
                     }
                     // UNIQUE 조건은 기존 코드가 미완성 상태
@@ -177,19 +213,26 @@ public class Main {
                         position += 2;
                     }
 
-                    if (isToken(position, words, ")", 0) && depth == 1) {
+                    if (isToken(position, words, ")", 0)) {
                         depth--;
                         break;
                     }
                     // if문 3개에는 position 증가가 있고, 해당하지않는 명령어가 있을때는 무한루프가 된다. 이거는 나중에 수정해야된다.
                 }
-                parserObject.getTableSchema().getColumnInfo().add(columninfo);
-                parserObject.getTableSchema().getTableConstraints().add(tableConstraint);
-                columninfo = new ColumnInfo();
-                if (isToken(position, words, ")", 0) && depth == 0) {
-                    break;
+                if (columninfo.getName() != null) {
+                    parserObject.getTableSchema().getColumnInfo().add(columninfo);
                 }
+                columninfo = new ColumnInfo();
             }
+            if (isToken(position, words, ")", 0) && isToken(position, words, ";", 1)) {
+                break;
+            }
+        }
+        if (!tableConstraint.getPk().isEmpty()
+                || !tableConstraint.getUnique().isEmpty()) {
+            parserObject.getTableSchema()
+                    .getTableConstraints()
+                    .add(tableConstraint);
         }
     }
 

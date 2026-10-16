@@ -1,0 +1,5 @@
+CREATE TABLE accounts (
+    id INT,
+    email VARCHAR(100) UNIQUE,
+    username VARCHAR(30) NOT NULL UNIQUE
+);

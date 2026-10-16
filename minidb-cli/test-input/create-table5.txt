@@ -1,0 +1,8 @@
+CREATE TABLE products (
+    id INT,
+    sku VARCHAR(30) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50),
+    price INT NOT NULL,
+    PRIMARY KEY (id)
+);

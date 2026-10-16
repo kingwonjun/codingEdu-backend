@@ -1,0 +1,5 @@
+CREATE TABLE members (
+    id INT NOT NULL,
+    username VARCHAR(30) NOT NULL,
+    email VARCHAR(100)
+);
