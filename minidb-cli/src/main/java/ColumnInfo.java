@@ -2,6 +2,7 @@ public class ColumnInfo {
     private String name;
     private String type;
     private Integer maxLength;
+    private boolean nullable = true;
 
     public ColumnInfo() {
 
@@ -29,5 +30,13 @@ public class ColumnInfo {
 
     public Integer getMaxLength() {
         return maxLength;
+    }
+
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    public void setNullable(boolean nullable) {
+        this.nullable = nullable;
     }
 }

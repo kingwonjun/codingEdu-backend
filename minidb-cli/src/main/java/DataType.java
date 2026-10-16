@@ -1,5 +1,3 @@
-package schema;
-
 public enum DataType {
     // 정수형
     TINYINT, SMALLINT, INT, BIGINT,

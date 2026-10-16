@@ -24,8 +24,7 @@ public class Main {
             while (checkPosition < inputSb.length()) {
                 if (inputSb.charAt(checkPosition) == '\'' && !inString) {
                     inString = true;
-                }
-                else if (inputSb.charAt(checkPosition) == '\'' && inString) {
+                } else if (inputSb.charAt(checkPosition) == '\'' && inString) {
                     inString = false;
                 }
                 if (inputSb.charAt(checkPosition) == ';' && !inString) {
@@ -79,8 +78,7 @@ public class Main {
                 sb.append('\'');
                 i++;
                 continue;
-            }
-            else if (c[i] == '\'') {
+            } else if (c[i] == '\'') {
                 if (!inString) {
                     inString = true;
                 } else {
@@ -103,68 +101,51 @@ public class Main {
 
         ParserObject parserObject = new ParserObject();
         ColumnInfo columninfo = new ColumnInfo();
+        TableConstraint tableConstraint = new TableConstraint();
         List<ColumnInfo> columnList = new ArrayList<>();
-
+        List<List<String>> uniqueList = new ArrayList<>();
+        List<String> pkList = new ArrayList<>();
         int position = 0;
         int depth = 0;
+
         while (position < words.size()) {
-
-            if (words.get(position).equalsIgnoreCase("CREATE")) {
-
+            if (isToken(position, words, "CREATE", 0)) {
+                position++;
             }
-            if (words.get(position).equalsIgnoreCase("TABLE")) {
+
+            if (isToken(position, words, "TABLE", 0)) {
                 parserObject.setCommand("CREATE_TABLE");
                 position++;
-                if (words.get(position).equalsIgnoreCase("IF")) {
+
+                if (isToken(position, words, "IF", 0)) {
                     position += 3;
                     parserObject.setIfNotExists(true);
                     continue;
                 } else {
                     parserObject.setTable(words.get(position));
+                    position++;
                 }
             }
+
             // 처음 시작할 때 depth 0
-            // maxLength가 필요한지 안필요한지 분기문으로
-            if (words.get(position).equals("(") && depth == 0) {
+            // maxLength가 필요한지 안 필요한지 분기문으로
+            if (isToken(position, words, "(", 0) && depth == 0) {
                 depth++;
                 position++;
                 if (position >= words.size()) {
-                    throw new IllegalArgumentException("SQL syntax error: Unexpected end of input");
+                    throw new IllegalArgumentException(
+                            "SQL syntax error: Unexpected end of input"
+                    );
                 }
-                columninfo.setName(words.get(position));
+                // Unique 때도 활용해야되서 변수로 바꿈
+                String columnName = words.get(position);
+                columninfo.setName(columnName);
                 position++;
-                if (words.get(position).equalsIgnoreCase("VARCHAR")
-                        || words.get(position).equalsIgnoreCase("CHAR")
-                        || words.get(position).equalsIgnoreCase("BIT")
-                        || words.get(position).equalsIgnoreCase("VARBIT")) {
-                    columninfo.setType(words.get(position));
-                    depth++;
-                    position += 2;
-                    columninfo.setMaxLength(Integer.valueOf(words.get(position)));
-                    position++;
-                    depth--;
-                } else {
-                    columninfo.setType(words.get(position));
-                }
-                parserObject.getColumns().add(columninfo);
-                columninfo = new ColumnInfo();
-                // 이 코드는 처음을 계산한뒤 , 가
-            }
-           else if (words.get(position).equals(",") && depth >= 1) {
-                position++;
-                if (words.get(position).equals(")")) {
-                    depth--;
-                }
-                else if (position >= words.size()) {
-                    throw new IllegalArgumentException("SQL syntax error: Unexpected end of input");
-                }
-                columninfo.setName(words.get(position));
-                position++;
+                if (isToken(position, words, "VARCHAR", 0)
+                        || isToken(position, words, "CHAR", 0)
+                        || isToken(position, words, "BIT", 0)
+                        || isToken(position, words, "VARBIT", 0)) {
 
-                if (words.get(position).equalsIgnoreCase("VARCHAR")
-                        || words.get(position).equalsIgnoreCase("CHAR")
-                        || words.get(position).equalsIgnoreCase("BIT")
-                        || words.get(position).equalsIgnoreCase("VARBIT")) {
                     columninfo.setType(words.get(position));
                     depth++;
                     position += 2;
@@ -173,12 +154,61 @@ public class Main {
                     depth--;
                 } else {
                     columninfo.setType(words.get(position));
+                    position++;
                 }
-                parserObject.getColumns().add(columninfo);
+                // isToken이 아니라 !isToken 이다
+                while (!isToken(position, words, ",", 0)) {
+                    if (isToken(position, words, "NOT", 0)
+                            && isToken(position, words, "NULL", 1)) {
+                        columninfo.setNullable(true);
+                        position += 2;
+                    }
+                    // UNIQUE 조건은 기존 코드가 미완성 상태
+                    if (isToken(position, words, "UNIQUE", 0)) {
+                        List<String> list = new ArrayList<>();
+                        list.add(columnName);
+                        uniqueList.add(list);
+                        tableConstraint.setUnique(uniqueList);
+                        position++;
+                    }
+                    if (isToken(position, words, "PRIMARY", 0) && isToken(position, words, "KEY", 1)) {
+                        pkList.add(columnName);
+                        tableConstraint.setPk(pkList);
+                        position += 2;
+                    }
+
+                    if (isToken(position, words, ")", 0) && depth == 1) {
+                        depth--;
+                        break;
+                    }
+                    // if문 3개에는 position 증가가 있고, 해당하지않는 명령어가 있을때는 무한루프가 된다. 이거는 나중에 수정해야된다.
+                }
+                parserObject.getTableSchema().getColumnInfo().add(columninfo);
+                parserObject.getTableSchema().getTableConstraints().add(tableConstraint);
                 columninfo = new ColumnInfo();
+                if (isToken(position, words, ")", 0) && depth == 0) {
+                    break;
+                }
             }
-            position++;
         }
+    }
 
+    private static boolean isToken(int position, List<String> words, String token, int offset) {
+        if (position >= words.size()) {
+            throw new ArrayIndexOutOfBoundsException("position이 words 사이즈에서 벗어났습니다.");
+        }
+        if (position + offset >= words.size()) {
+            throw new ArrayIndexOutOfBoundsException("position + offset이 words 사이즈에서 벗어났습니다.");
+        }
+        if (position + offset < 0) {
+            throw new ArrayIndexOutOfBoundsException("위치값이 -1 미만입니다.");
+        }
+        return words.get(position + offset).equalsIgnoreCase(token);
     }
 }
+
+
+
+
+
+

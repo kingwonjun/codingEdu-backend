@@ -6,7 +6,9 @@ public class ParserObject {
     private String command;
     private String table;
     private boolean ifNotExists;
-    private List<ColumnInfo> columns = new ArrayList<>();
+
+    private TableData tableData = new TableData();
+    private TableSchema tableSchema = new TableSchema();
 
     public String getCommand() {
         return command;
@@ -24,19 +26,27 @@ public class ParserObject {
         this.table = table;
     }
 
-    public List<ColumnInfo> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<ColumnInfo> columns) {
-        this.columns = columns;
-    }
-
     public boolean isIfNotExists() {
         return ifNotExists;
     }
 
     public void setIfNotExists(boolean ifNotExists) {
         this.ifNotExists = ifNotExists;
+    }
+
+    public TableData getTableData() {
+        return tableData;
+    }
+
+    public void setTableData(TableData tableData) {
+        this.tableData = tableData;
+    }
+
+    public TableSchema getTableSchema() {
+        return tableSchema;
+    }
+
+    public void setTableSchema(TableSchema tableSchema) {
+        this.tableSchema = tableSchema;
     }
 }
