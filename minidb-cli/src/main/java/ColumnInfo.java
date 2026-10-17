@@ -3,6 +3,8 @@ public class ColumnInfo {
     private String type;
     private Integer maxLength;
     private boolean nullable = true;
+    private boolean hasDefaultNull;
+    private Object defaultValue;
 
     public ColumnInfo() {
 
@@ -38,5 +40,21 @@ public class ColumnInfo {
 
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
+    }
+
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public boolean isHasDefaultNull() {
+        return hasDefaultNull;
+    }
+
+    public void setHasDefaultNull(boolean hasDefaultNull) {
+        this.hasDefaultNull = hasDefaultNull;
     }
 }

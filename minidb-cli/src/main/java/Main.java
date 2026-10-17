@@ -12,8 +12,10 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         boolean inString = false;
         List<String> words = new ArrayList<>();
-
         StringBuilder inputSb = new StringBuilder();
+
+        //TODO 닫히지 않은 작은따옴표 처리, 이스케이프 따옴표 ('') 처리, EOF 및 잘못된 SQL 입력 처리
+
         int checkPosition = 0;
         while (true) {
             String line = br.readLine();
@@ -211,6 +213,14 @@ public class Main {
                         pkList.add(columnName);
                         tableConstraint.setPk(pkList);
                         position += 2;
+                    }
+                    if (isToken(position, words, "DEFAULT", 0)) {
+                        position++;
+                        if (isToken(position, words, "NULL", 0)) {
+                            columninfo.setHasDefaultNull(true);
+                        }
+                        columninfo.setDefaultValue(words.get(position));
+                        position++;
                     }
 
                     if (isToken(position, words, ")", 0)) {
